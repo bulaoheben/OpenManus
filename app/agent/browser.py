@@ -8,7 +8,6 @@ from app.logger import logger
 from app.prompt.browser import NEXT_STEP_PROMPT, SYSTEM_PROMPT
 from app.schema import Message, ToolChoice
 from app.tool import BrowserUseTool, Terminate, ToolCollection
-from app.tool.sandbox.sb_browser_tool import SandboxBrowserTool
 
 
 # Avoid circular import if BrowserAgent needs BrowserContextHelper
@@ -24,6 +23,8 @@ class BrowserContextHelper:
     async def get_browser_state(self) -> Optional[dict]:
         browser_tool = self.agent.available_tools.get_tool(BrowserUseTool().name)
         if not browser_tool:
+            from app.tool.sandbox.sb_browser_tool import SandboxBrowserTool
+
             browser_tool = self.agent.available_tools.get_tool(
                 SandboxBrowserTool().name
             )

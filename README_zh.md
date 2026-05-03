@@ -196,3 +196,58 @@ OpenManus 由 MetaGPT 社区的贡献者共同构建，感谢这个充满活力�
   url = {https://doi.org/10.5281/zenodo.15186407},
 }
 ```
+
+
+
+
+
+已解决问题
+
+| 序号 | 问题描述                                     | 文件 / 位置             | 根因分析                                                     | 修复方式                               |
+| ---- | -------------------------------------------- | ----------------------- | ------------------------------------------------------------ | -------------------------------------- |
+| 1    | DaytonaSettings () 空构造报错                | app/config.py:297       | config.toml 无 [daytona] 节点时，仍空参数实例化；daytona_api_key 为必填字段 | 改为 daytona_settings = None           |
+| 2    | SandboxBrowserTool 模块级导入阻塞            | app/agent/browser.py:11 | 文件顶部直接 `from app.tool.sandbox.sb_browser_tool import SandboxBrowserTool`，触发 daytona 依赖链阻塞 | 改为在方法内部**延迟导入**             |
+| 3    | API 请求返回 404                             | config/config.toml:4    | 配置 `base_url = "https://api.deepseek.com/anthropic"`，该代理接口路径已失效 | 修改为 `https://api.deepseek.com`      |
+| 4    | 缺少 structlog 模块                          | app/utils/logger.py:4   | structlog 未写入 requirements.txt 依赖清单                   | 执行：`pip install structlog`          |
+| 5    | RequestsDependencyWarning 版本不匹配         | open_manus conda 环境   | urllib3 2.6.3 与 requests 版本存在兼容冲突                   | 执行：`pip install --upgrade requests` |
+| 6    | Playwright 浏览器未安装                      | 系统级环境              | 未自动下载安装 Chromium 内核浏览器                           | 执行：`playwright install chromium`    |
+| 7    | config.toml 中 vision 模型 base_url 地址错误 | config/config.toml:45   | 沿用已失效的代理接口地址，和第 3 条同源问题                  | 统一改为 `https://api.deepseek.com`    |
+
+---
+  剩余问题（不影响运行）
+
+  1. Pydantic 兼容警告（无害）
+
+  UserWarning: Valid config keys have changed in V2:
+  * 'underscore_attrs_are_private' has been removed
+  - 原因：browser-use 第三方包使用了旧版 pydantic v1 的配置项
+  - 影响：纯警告，功能完全正常
+  - 能否修复：需等 browser-use 包升级适配 pydantic v2，或者降级 pydantic 到 v1（不推荐）
+
+  2. 中文站点反自动化检测（行为限制，非错误）
+
+  - 12306.cn、携程等网站对 headless 浏览器有限制，AI 自动操作时可能无法完整获取页面内容（如票价表格）
+  - 表现：页面能打开，但输入框/查询结果被隐藏或需验证码
+  - 建议：去 12306 App 购票更可靠
+
+  3. Google 搜索超时
+
+  RetryError[ConnectTimeout]
+  - 原因：国内网络访问 Google 受限
+  - 已有兜底：项目配置了 DuckDuckGo、Baidu、Bing 等多个搜索引擎作为 fallback
+
+  4. 未安装的可选依赖
+
+  ┌──────────────────┬─────────────────┬─────────────────────────────┬────────────┐
+  │       功能       │      依赖       │          安装方式           │  是否需要  │
+  ├──────────────────┼─────────────────┼─────────────────────────────┼────────────┤
+  │ Daytona 远程沙箱 │ daytona==0.21.8 │ pip install daytona==0.21.8 │ 不用可忽略 │
+  ├──────────────────┼─────────────────┼─────────────────────────────┼────────────┤
+  │ Docker 本地沙箱  │ Docker Desktop  │ 手动安装 Docker             │ 不用可忽略 │
+  ├──────────────────┼─────────────────┼─────────────────────────────┼────────────┤
+  │ 图表可视化       │ Node.js >= 18   │ 手动安装 + npm install      │ 不用可忽略 │
+  ├──────────────────┼─────────────────┼─────────────────────────────┼────────────┤
+  │ A2A 协议         │ a2a-sdk==0.2.5  │ pip install a2a-sdk==0.2.5  │ 不用可忽略 │
+  └──────────────────┴─────────────────┴─────────────────────────────┴────────────┘
+
+  一句话：核心功能（LLM 对话 + 浏览器 + 搜索 + Python 执行）全部就绪，可以直接用了。
