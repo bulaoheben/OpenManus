@@ -7,7 +7,11 @@
       "Read(//c/Users/yongy/miniconda3/Scripts/**)",
       "Read(//c/Users/yongy/miniconda3/envs//**)",
       "Bash(export PATH=\"/c/Users/yongy/miniconda3/Scripts:$PATH\")",
-      "Bash(/c/Users/yongy/miniconda3/envs/open_manus/python.exe *)"
+      "Bash(/c/Users/yongy/miniconda3/envs/open_manus/python.exe *)",
+      "Bash(npm --version)",
+      "Bash(docker --version)",
+      "Bash(npm install *)",
+      "Bash(PUPPETEER_SKIP_DOWNLOAD=true npm install)"
     ]
   }
 }
