@@ -1,6 +1,11 @@
 # `app/tool/browser_use_tool.py` — 浏览器自动化工具
 
+[toc]
+
+
+
 ## 文件位置
+
 `app/tool/browser_use_tool.py`
 
 ## 核心作用
@@ -65,3 +70,19 @@
 - 内部集成 `WebSearch` 处理 `web_search` 动作
 - 使用 `LLM.ask_tool()` 处理 `extract_content`
 - 配置来自 `app/config.py` 的 `browser_config`
+
+
+
+## 补充：
+
+### 1.app/tool/browser_use_tool.py中browser_use是在哪里定义的？
+
+同样是第三方库，不在 OpenManus 项目内：
+
+  C:\Users\yongy\miniconda3\envs\open_manus\Lib\site-packages\browser_use\__init__.py
+
+  browser-use 是一个专门做 AI Agent 浏览器自动化的 Python 库（基于 Playwright），核心功能包括：
+
+![image-20260509182109299](C:\Users\yongy\AppData\Roaming\Typora\typora-user-images\image-20260509182109299.png)
+
+  项目中所有 browser_use.xxx 或 from browser_use import xxx 导入的都是这个第三方包，不是项目自身代码。
