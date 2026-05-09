@@ -21,6 +21,9 @@ def define_log_level(print_level="INFO", logfile_level="DEBUG", name: str = None
     )  # name a log with prefix name
 
     _logger.remove()
+    # Ensure stderr uses UTF-8 to display Chinese characters correctly
+    if hasattr(sys.stderr, "reconfigure"):
+        sys.stderr.reconfigure(encoding="utf-8")
     _logger.add(sys.stderr, level=print_level)
     _logger.add(PROJECT_ROOT / f"logs/{log_name}.log", level=logfile_level)
     return _logger

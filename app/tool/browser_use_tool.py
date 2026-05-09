@@ -435,7 +435,30 @@ Page content:
                     )
 
                     if response and response.tool_calls:
-                        args = json.loads(response.tool_calls[0].function.arguments)
+                        args_text = response.tool_calls[0].function.arguments
+                        # Robust JSON parsing: handle extra data after JSON object
+                        def _extract_first_json(text):
+                            brace_count = 0
+                            start = -1
+                            for i, c in enumerate(text):
+                                if c == '{':
+                                    if start == -1:
+                                        start = i
+                                    brace_count += 1
+                                elif c == '}':
+                                    brace_count -= 1
+                                    if brace_count == 0 and start != -1:
+                                        return text[start:i+1]
+                            return None
+
+                        try:
+                            args = json.loads(args_text)
+                        except json.JSONDecodeError:
+                            first_json = _extract_first_json(args_text)
+                            if first_json:
+                                args = json.loads(first_json)
+                            else:
+                                return ToolResult(output=f"Extracted from page (raw):\n{args_text}\n")
                         extracted_content = args.get("extracted_content", {})
                         return ToolResult(
                             output=f"Extracted from page:\n{extracted_content}\n"

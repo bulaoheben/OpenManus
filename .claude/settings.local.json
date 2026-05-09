@@ -11,7 +11,15 @@
       "Bash(npm --version)",
       "Bash(docker --version)",
       "Bash(npm install *)",
-      "Bash(PUPPETEER_SKIP_DOWNLOAD=true npm install)"
+      "Bash(PUPPETEER_SKIP_DOWNLOAD=true npm install)",
+      "Bash(python -c \"import sys; print\\(sys.version\\)\")",
+      "Bash(pip list *)",
+      "Bash(python main.py *)",
+      "Bash(python -c ' *)",
+      "Bash(PYTHONIOENCODING=utf-8 python -c ' *)",
+      "Bash(grep -v \"^$\")",
+      "Bash(grep -v \"\\\\.$\")",
+      "Bash(python *)"
     ]
   }
 }

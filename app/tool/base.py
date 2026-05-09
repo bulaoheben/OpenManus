@@ -6,7 +6,6 @@ from pydantic import BaseModel, Field
 
 from app.utils.logger import logger
 
-
 # class BaseTool(ABC, BaseModel):
 #     name: str
 #     description: str
@@ -33,7 +32,6 @@ from app.utils.logger import logger
 #                 "parameters": self.parameters,
 #             },
 #         }
-
 
 class ToolResult(BaseModel):
     """Represents the result of a tool execution."""
@@ -98,7 +96,6 @@ class BaseTool(ABC, BaseModel):
 
     class Config:
         arbitrary_types_allowed = True
-        underscore_attrs_are_private = False
 
     # def __init__(self, **data):
     #     """Initialize tool with model validation and schema registration."""

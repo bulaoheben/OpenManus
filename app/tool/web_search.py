@@ -12,7 +12,6 @@ from app.tool.base import BaseTool, ToolResult
 from app.tool.search import (
     BaiduSearchEngine,
     BingSearchEngine,
-    DuckDuckGoSearchEngine,
     GoogleSearchEngine,
     WebSearchEngine,
 )
@@ -193,7 +192,6 @@ class WebSearch(BaseTool):
     _search_engine: dict[str, WebSearchEngine] = {
         "google": GoogleSearchEngine(),
         "baidu": BaiduSearchEngine(),
-        "duckduckgo": DuckDuckGoSearchEngine(),
         "bing": BingSearchEngine(),
     }
     content_fetcher: WebContentFetcher = WebContentFetcher()

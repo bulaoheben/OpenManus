@@ -171,6 +171,17 @@ class TokenCounter:
         return total_tokens
 
 
+def _clean_surrogates(obj):
+    """Remove surrogate characters from strings in nested dicts/lists to prevent UnicodeEncodeError."""
+    if isinstance(obj, str):
+        return obj.encode('utf-8', errors='replace').decode('utf-8')
+    elif isinstance(obj, dict):
+        return {k: _clean_surrogates(v) for k, v in obj.items()}
+    elif isinstance(obj, list):
+        return [_clean_surrogates(item) for item in obj]
+    return obj
+
+
 class LLM:
     _instances: Dict[str, "LLM"] = {}
 
@@ -403,6 +414,9 @@ class LLM:
                 # Raise a special exception that won't be retried
                 raise TokenLimitExceeded(error_message)
 
+            # Sanitize surrogate characters
+            messages = _clean_surrogates(messages)
+
             params = {
                 "model": self.model,
                 "messages": messages,
@@ -572,6 +586,9 @@ class LLM:
             if not self.check_token_limit(input_tokens):
                 raise TokenLimitExceeded(self.get_limit_error_message(input_tokens))
 
+            # Sanitize surrogate characters
+            all_messages = _clean_surrogates(all_messages)
+
             # Set up API parameters
             params = {
                 "model": self.model,
@@ -709,6 +726,11 @@ class LLM:
                 for tool in tools:
                     if not isinstance(tool, dict) or "type" not in tool:
                         raise ValueError("Each tool must be a dict with 'type' field")
+
+            # Sanitize surrogate characters to prevent httpx UnicodeEncodeError
+            messages = _clean_surrogates(messages)
+            if tools:
+                tools = _clean_surrogates(tools)
 
             # Set up the completion request
             params = {
