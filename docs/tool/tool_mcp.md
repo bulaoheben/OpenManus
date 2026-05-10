@@ -1,6 +1,9 @@
 # `app/tool/mcp.py` — MCP 客户端工具集成
 
+[toc]
+
 ## 文件位置
+
 `app/tool/mcp.py`
 
 ## 核心作用
