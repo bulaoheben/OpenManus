@@ -1,6 +1,9 @@
 # `app/agent/base.py` — Agent 抽象基类
 
+[toc]
+
 ## 文件位置
+
 `app/agent/base.py`
 
 ## 核心作用

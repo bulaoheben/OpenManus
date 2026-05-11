@@ -1,10 +1,13 @@
 # `app/flow/planning.py` — 计划式执行流
 
+[toc]
+
 ## 文件位置
+
 `app/flow/planning.py`
 
 ## 核心作用
-`PlanningFlow` 是项目中最核心的 Flow 实现，它协调多个 Agent 按计划分步骤执行任务。工作流程为：创建计划 → 分配步骤给 Agent → 执行 → 标记完成 → 循环直到全部完成。
+`PlanningFlow` 是项目中最核心的 Flow 实现，它协调多个 Agent 按计划分步骤执行任务。工作流程为：**创建计划 → 分配步骤给 Agent → 执行 → 标记完成 → 循环直到全部完成**。
 
 ## 辅助枚举
 

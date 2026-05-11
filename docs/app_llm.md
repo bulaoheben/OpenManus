@@ -1,6 +1,9 @@
 # `app/llm.py` — LLM 集成
 
+[toc]
+
 ## 文件位置
+
 `app/llm.py`
 
 ## 核心作用
@@ -15,6 +18,31 @@ MULTIMODAL_MODELS = [                           # 多模态模型列表
     "claude-3-opus-20240229", "claude-3-sonnet-20240229", "claude-3-haiku-20240307",
 ]
 ```
+
+#### 一、先看懂配置里的两个分组
+
+1）REASONING_MODELS = ["o1", "o3-mini"]
+
+**专门用于深度思考、数学、代码、逻辑推理**
+
+特点：**纯文本、不支持看图、不使用 temperature**（输出更稳定、更严谨）
+
+2）MULTIMODAL_MODELS = [...]
+
+**多模态模型，能看图片 + 文本一起理解**
+
+特点：**支持识图、截图分析、图表、OCR、图文问答**
+
+#### 二、你项目里为什么这么分？
+
+- **REASONING_MODELS**：做**思考、决策、规划**
+- **MULTIMODAL_MODELS**：做**看图、理解界面、分析截图**
+
+你的框架是：**用推理模型当大脑，用多模态模型处理视觉输入**
+
+这是 AI Agent（如 OpenManus、OpenClaw）的标准架构。
+
+
 
 ## 类结构
 
@@ -60,6 +88,7 @@ LLM._instances: Dict[str, "LLM"] = {}  # 按 config_name 缓存
 4. 初始化 `TokenCounter`
 
 **属性：**
+
 | 属性 | 类型 | 说明 |
 |------|------|------|
 | `model` | `str` | 模型名称 |
@@ -87,6 +116,19 @@ LLM._instances: Dict[str, "LLM"] = {}  # 按 config_name 缓存
 4. 清理 surrogate 字符（防止 UnicodeEncodeError）
 5. 流式或非流式调用
 6. 更新 token 计数
+
+这段代码是一个**异步调用 LLM（大模型）的核心方法 `ask()`**
+
+作用：**给模型发消息 → 模型返回回答 → 支持流式输出 / 非流式 → 处理 Tokens → 处理错误**
+
+**参数通俗解释**
+
+- `messages`：你要问 AI 的对话记录
+- `system_msgs`：系统提示（比如 “你是一个编程助手”）
+- `stream`：True = 一边生成一边输出（打字机）
+- `temperature`：越高回答越天马行空，越低越严谨
+
+
 
 #### `ask_with_images(messages, images, system_msgs, stream, temperature)` → `str`
 发送图文请求给 LLM：

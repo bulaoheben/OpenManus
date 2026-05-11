@@ -43,4 +43,4 @@ async def step(self) -> str:
 ## 设计模式
 - **模板方法模式**：`step()` 定义"思考→行动"固定流程，`think()` 和 `act()` 由子类实现
 - `ReActAgent` 本身也是抽象类，不提供 `think()` 和 `act()` 的实现
-- `ToolCallAgent` 是第一个提供了完整 `think()` + `act()` 实现的子类
+- `ToolCallAgent` 是第一个提供了完整 `think()` + `act()` 实现的子类     

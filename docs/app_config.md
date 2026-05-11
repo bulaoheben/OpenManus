@@ -9,7 +9,9 @@
 `app/config.py`
 
 ## 核心作用
-管理 OpenManus 的全部配置：<u>从 `config/config.toml` 和 `config/mcp.json` 读取配置，通过 Pydantic 模型验证，提供全局单例访问</u>。
+管理 OpenManus 的全部配置：<u>从 `config/config.toml` 和 `config/mcp.json` 读取配置，通过 **Pydantic 模型验证**，提供全局单例访问</u>。
+
+（Pydantic 是一个**用于数据验证和设置管理**的 Python 库。它通过使用 Python 类型注解（type hints），提供了简单而高效的数据验证机制。Pydantic 的核心组件是 BaseModel 类，通过继承这个类，我们可以定义具有数据验证和序列化功能的模型。）
 
 ## 路径常量
 ```python
@@ -31,7 +33,15 @@ WORKSPACE_ROOT = PROJECT_ROOT / "workspace"            # 工作空间目录
 | <u>`api_type`</u> | <u>`str`</u> | <u>必填</u> | <u>azure / openai / ollama 等</u> |
 | `api_version` | `str` | 必填 | Azure API 版本 |
 
+(temperature：LLM 生成文本时的随机性参数，值越高（如
+1.5）输出越有创意/不确定，值越低（如 0.1）输出越确定/保守。)
+
+(指定 LLM 后端的连接类型。项目支持三种：openai（标准 OpenAI 兼容
+  API）、azure（Azure OpenAI 服务）、ollama（本地 Ollama）。在
+  app/config.py:29 定义，<u>这个值决定了 app/llm.py 中初始化哪个客户端</u>)
+
 ### `SearchSettings`
+
 | 字段 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
 | `engine` | `str` | `"Bing"` | 首选搜索引擎 |
@@ -41,7 +51,12 @@ WORKSPACE_ROOT = PROJECT_ROOT / "workspace"            # 工作空间目录
 | <u>`lang`</u> | <u>`str`</u> | <u>`"en"`</u> | <u>搜索语言</u> |
 | <u>`country`</u> | <u>`str`</u> | <u>`"us"`</u> | <u>搜索国家</u> |
 
+(搜索结果的语言偏好，传给搜索引擎 API 的参数。设为 "zh"优先返回中文结果，"en" 优先英文)
+
+(搜索结果的地域偏好，也是传给搜索引擎的参数。"us" 偏向美国来源，"cn"偏向中国来源)
+
 ### `BrowserSettings`
+
 | 字段 | 类型 | 默认值 | 说明 |
 |------|------|--------|------|
 | `headless` | `bool` | `False` | 是否无头模式 |
@@ -91,8 +106,6 @@ username: str    # 代理用户名
 password: str    # 代理密码
 ```
 
-<u>来源于哪个文件里的定义？</u>
-
 ### `AppConfig`
 
 顶层配置聚合模型：
@@ -111,6 +124,8 @@ class AppConfig(BaseModel):
 
 ### 单例模式
 <u>使用双重检查锁定（Double-Checked Locking）实现线程安全单例：</u>
+
+( 一种多线程环境下的单例模式实现。Config 类（app/config.py:197-215）先检查 _instance 是否为 None（第一次检查），不为 None 则直接返回；为 None时才加锁再检查一次（第二次检查），确保只在首次创建时加锁，避免每次访问都有锁开销)
 
 ```python
 class Config:

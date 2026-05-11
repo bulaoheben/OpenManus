@@ -1,6 +1,9 @@
 # `app/schema.py` — 数据模型定义
 
+[toc]
+
 ## 文件位置
+
 `app/schema.py`
 
 ## 核心作用
@@ -9,6 +12,7 @@
 ## 枚举类型
 
 ### `Role(str, Enum)`
+
 消息角色：
 | 枚举值 | 值 | 说明 |
 |--------|-----|------|
@@ -43,6 +47,44 @@ Agent 执行状态：
 | `RUNNING` | `"RUNNING"` | 运行中 |
 | `FINISHED` | `"FINISHED"` | 完成 |
 | `ERROR` | `"ERROR"` | 错误 |
+
+##### 问题1：**它们不是同一个变量！它们是 “同一个类型下的不同选项”。**这个东西叫 **枚举（Enum）**，作用是：
+
+**定义一组固定、有限、有名字的 “状态值”，方便代码里用。**
+
+**state = AgentState.IDLE **
+
+**state = AgentState.RUNNING**
+
+这样就不会写错，而且还会自动提示，能一眼看懂状态有哪些，代码更加安全清晰。
+
+```
+class AgentState(str, Enum):
+    IDLE = "IDLE"       # 空闲
+    RUNNING = "RUNNING" # 运行中
+    FINISHED = "FINISHED" # 完成
+    ERROR = "ERROR"     # 出错
+```
+
+##### 问题2：literal 的用法
+
+```
+class Role(str, Enum):
+    """Message role options"""
+
+    SYSTEM = "system"
+    USER = "user"
+    ASSISTANT = "assistant"
+    TOOL = "tool"
+
+
+ROLE_VALUES = tuple(role.value for role in Role)
+ROLE_TYPE = Literal[ROLE_VALUES]  # type: ignore
+```
+
+**Literal = 强制只能写固定的几个字符串 / 值，写错就报错！**它就是给代码加一个 **“严格限制器”**。固定值类型，只允许你用括号里写死的几个值。
+
+
 
 ## 数据模型
 

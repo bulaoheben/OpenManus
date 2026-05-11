@@ -1,6 +1,9 @@
 # `app/flow/flow_factory.py` — Flow 工厂
 
+[toc]
+
 ## 文件位置
+
 `app/flow/flow_factory.py`
 
 ## 核心作用
@@ -43,3 +46,16 @@ def create_flow(flow_type, agents, **kwargs) -> BaseFlow
 ## 调用关系
 - 在 `main.py` 中调用 `FlowFactory.create_flow()` 创建 Flow
 - 当前仅支持 `PLANNING` 类型，映射到 `PlanningFlow`
+
+
+
+## **Flow = 智能体的 “工作流程”**
+
+比如：
+
+- **PlanningFlow（规划流）**：AI 先做任务规划
+- **ExecutionFlow**：执行任务
+- **ChatFlow**：聊天
+- **ToolFlow**：调用工具
+
+它们都继承自 **BaseFlow**（基础流）

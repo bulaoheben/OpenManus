@@ -1,6 +1,9 @@
 # `app/agent/toolcall.py` — 工具调用 Agent
 
+[toc]
+
 ## 文件位置
+
 `app/agent/toolcall.py`
 
 ## 核心作用

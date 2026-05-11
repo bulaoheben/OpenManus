@@ -1,10 +1,13 @@
 # `app/flow/base.py` — Flow 抽象基类
 
+[toc]
+
 ## 文件位置
+
 `app/flow/base.py`
 
 ## 核心作用
-定义执行流（Flow）的抽象基类，支持多 Agent 编排。Flow 不同于 Agent——Agent 负责单步骤的思考-行动循环，Flow 负责协调多个 Agent 按流程执行任务。
+定义**执行流（Flow）的抽象基类，支持多 Agent 编排**。Flow 不同于 Agent——Agent 负责单步骤的思考-行动循环，**Flow 负责协调多个 Agent 按流程执行任务**。
 
 ## 类结构
 
@@ -43,6 +46,6 @@
 - 使用 Pydantic 的 `arbitrary_types_allowed = True` 配置
 
 ## 调用关系
-- 被 `app/flow/flow_factory.py` 的 `FlowFactory` 用于创建具体 Flow
-- 被 `app/flow/planning.py` 的 `PlanningFlow` 继承实现
-- 底层使用 `app/agent/base.py` 的 `BaseAgent` 执行任务
+- 被 `app/flow/flow_factory.py` 的 **`FlowFactory` 用于创建具体 Flow**
+- 被 `app/flow/planning.py` 的 **`PlanningFlow` 继承实现**
+- 底层使用 `app/agent/base.py` 的 **`BaseAgent` 执行任务**   
