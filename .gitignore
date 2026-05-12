@@ -8,6 +8,9 @@ data/
 # Workspace
 workspace/
 
+# Personal docs (internship notes, improvement plans, etc.)
+docs/
+
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
