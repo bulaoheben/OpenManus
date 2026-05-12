@@ -66,6 +66,13 @@ class RunflowSettings(BaseModel):
     )
 
 
+class AgentBehaviorSettings(BaseModel):
+    confirmation_mode: str = Field(
+        default="auto",
+        description="Agent confirmation mode: 'auto' (auto-correct, ask only when stuck) or 'strict' (force ask_human on non-exact matches)",
+    )
+
+
 class BrowserSettings(BaseModel):
     headless: bool = Field(False, description="Whether to run browser in headless mode")
     disable_security: bool = Field(
@@ -189,6 +196,10 @@ class AppConfig(BaseModel):
     daytona_config: Optional[DaytonaSettings] = Field(
         None, description="Daytona configuration"
     )
+    agent_behavior: AgentBehaviorSettings = Field(
+        default_factory=AgentBehaviorSettings,
+        description="Agent behavior configuration",
+    )
 
     class Config:
         arbitrary_types_allowed = True
@@ -310,6 +321,13 @@ class Config:
             run_flow_settings = RunflowSettings(**run_flow_config)
         else:
             run_flow_settings = RunflowSettings()
+
+        agent_behavior_config = raw_config.get("agent_behavior")
+        if agent_behavior_config:
+            agent_behavior_settings = AgentBehaviorSettings(**agent_behavior_config)
+        else:
+            agent_behavior_settings = AgentBehaviorSettings()
+
         config_dict = {
             "llm": {
                 "default": default_settings,
@@ -324,6 +342,7 @@ class Config:
             "mcp_config": mcp_settings,
             "run_flow_config": run_flow_settings,
             "daytona_config": daytona_settings,
+            "agent_behavior": agent_behavior_settings,
         }
 
         self._config = AppConfig(**config_dict)
@@ -357,6 +376,16 @@ class Config:
     def run_flow_config(self) -> RunflowSettings:
         """Get the Run Flow configuration"""
         return self._config.run_flow_config
+
+    @property
+    def agent_behavior(self) -> AgentBehaviorSettings:
+        """Get the agent behavior configuration"""
+        return self._config.agent_behavior
+
+    @property
+    def confirmation_mode(self) -> str:
+        """Get the confirmation mode ('auto' or 'strict')"""
+        return self._config.agent_behavior.confirmation_mode
 
     @property
     def workspace_root(self) -> Path:

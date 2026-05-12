@@ -1,9 +1,10 @@
 import json
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING, Dict, Optional
 
 from pydantic import Field, model_validator
 
 from app.agent.toolcall import ToolCallAgent
+from app.config import config
 from app.logger import logger
 from app.prompt.browser import NEXT_STEP_PROMPT, SYSTEM_PROMPT
 from app.schema import Message, ToolChoice
@@ -13,6 +14,17 @@ from app.tool import BrowserUseTool, Terminate, ToolCollection
 # Avoid circular import if BrowserAgent needs BrowserContextHelper
 if TYPE_CHECKING:
     from app.agent.base import BaseAgent  # Or wherever memory is defined
+
+
+_CONFIRMATION_RULES: Dict[str, str] = {
+    "auto": "",
+    "strict": (
+        "**IMPORTANT**: After each search or navigation, verify the page content "
+        "**exactly matches** the user's request. "
+        "If not, you MUST use `ask_human` to confirm similar alternatives with "
+        "the user before proceeding. Never auto-correct silently."
+    ),
+}
 
 
 class BrowserContextHelper:
@@ -77,6 +89,9 @@ class BrowserContextHelper:
             content_above_placeholder=content_above_info,
             content_below_placeholder=content_below_info,
             results_placeholder=results_info,
+            confirmation_rule=_CONFIRMATION_RULES.get(
+                config.confirmation_mode, _CONFIRMATION_RULES["auto"]
+            ),
         )
 
     async def cleanup_browser(self):

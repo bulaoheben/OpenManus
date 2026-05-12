@@ -15,13 +15,30 @@ from app.tool.python_execute import PythonExecute
 from app.tool.str_replace_editor import StrReplaceEditor
 
 
+_CONFIRMATION_RULES: Dict[str, str] = {
+    "auto": "",
+    "strict": (
+        "\n\nIMPORTANT: When you perform a search or navigation for the user, "
+        "you MUST verify the results exactly match what they requested. "
+        "If they don't exactly match: scan for similar alternatives, "
+        "then use `ask_human` to confirm with the user before proceeding. "
+        "Never auto-correct silently or assume success just because the page loaded."
+    ),
+}
+
+
 class Manus(ToolCallAgent):
     """A versatile general-purpose agent with support for both local and MCP tools."""
 
     name: str = "Manus"
     description: str = "A versatile agent that can solve various tasks using multiple tools including MCP-based tools"
 
-    system_prompt: str = SYSTEM_PROMPT.format(directory=config.workspace_root)
+    system_prompt: str = SYSTEM_PROMPT.format(
+        directory=config.workspace_root,
+        confirmation_rule=_CONFIRMATION_RULES.get(
+            config.confirmation_mode, _CONFIRMATION_RULES["auto"]
+        ),
+    )
     next_step_prompt: str = NEXT_STEP_PROMPT
 
     max_observe: int = 10000

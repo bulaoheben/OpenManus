@@ -93,8 +93,7 @@ For browser interactions:
 
 Consider both what's visible and what might be beyond the current viewport.
 Be methodical - remember your progress and what you've learned so far.
-**IMPORTANT**: After each search or navigation, verify the page content **exactly matches** the user's request.
-If not, you MUST use `ask_human` to confirm similar alternatives with the user before proceeding. Never auto-correct silently.
+{confirmation_rule}
 
 If you want to stop the interaction at any point, use the `terminate` tool/function call.
 """
