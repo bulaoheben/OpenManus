@@ -46,6 +46,10 @@ Common action sequences:
 - If you want to research something, open a new tab instead of using the current tab
 - If captcha pops up, try to solve it - else try a different approach
 - If the page is not fully loaded, use wait action
+- After search or navigation, you MUST verify the results **exactly match** what the user requested.
+  - If not: scan for similar content. If a probable match is found, you MUST call `ask_human` to get user confirmation before taking any further action. DO NOT auto-correct without asking.
+  - If no similar content exists, use `ask_human` to inform the user and ask for clarification.
+  - Never assume success just because the page loaded.
 
 5. TASK COMPLETION:
 - Use the done action as the last action as soon as the ultimate task is complete
@@ -89,6 +93,8 @@ For browser interactions:
 
 Consider both what's visible and what might be beyond the current viewport.
 Be methodical - remember your progress and what you've learned so far.
+**IMPORTANT**: After each search or navigation, verify the page content **exactly matches** the user's request.
+If not, you MUST use `ask_human` to confirm similar alternatives with the user before proceeding. Never auto-correct silently.
 
 If you want to stop the interaction at any point, use the `terminate` tool/function call.
 """
